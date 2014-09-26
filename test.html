@@ -60,7 +60,7 @@
         (function () {
 
             window.onload = function () {
-                //восемь стоит только из эстетических соображений
+                //8 стоит только из эстетических соображений
                 new SetEqualizer(document.querySelector('#eq_1 .equalizer'), 1000, 8).run();
                 new SetEqualizer(document.querySelector('#eq_2 .equalizer'), 2000, 8).run();
                 new SetEqualizer(document.querySelector('#eq_3 .equalizer'), 4000, 8).run();
@@ -74,7 +74,7 @@
                 var HIT_DURATION = 50;
                 var RELAX_DURATION = timeout - HIT_DURATION;
                 var switcher = true;
-
+                var transitionDuration = 'transitionDuration';
                 init();
 
                 var cellWrapperElem = containerElem.getElementsByClassName('hit')[0];
@@ -106,12 +106,21 @@
                         cellWrapperElem.appendChild(cellElem);
                     }
                     containerElem.appendChild(cellWrapperElem);
+                    var style = cellElem.style;
+
+                    if (transitionDuration in style) {
+                        return;
+                    } else {
+                        transitionDuration = ('webkitTransitionDuration' in style) ? 'webkitTransitionDuration' : '';
+                        transitionDuration = ('mozTransitionDuration' in style) ? 'mozTransitionDuration' : '';
+                        transitionDuration = ('oTransitionDuration' in style) ? 'oTransitionDuration' : '';
+                    }
                 }
 
                 function hitCells() {
                     for (var i = 0; i < cellsElems.length; i++) {
                         var cell = cellsElems[i];
-                        cell.style.transitionDuration = HIT_DURATION / 2 + 'ms';
+                        cell.style[transitionDuration] = HIT_DURATION / 2 + 'ms';
                         cell.style.height = Math.round(CONTAINER_HEIGHT * Math.random()) + 'px';
                     }
                     setTimeout(run, HIT_DURATION);
@@ -130,7 +139,7 @@
                 function relaxCell() {
                     for (var i = 0; i < cellsElems.length; i++) {
                         var cell = cellsElems[i];
-                        cell.style.transitionDuration = RELAX_DURATION / 2 + 'ms';
+                        cell.style[transitionDuration] = RELAX_DURATION / 2 + 'ms';
                         cell.style.height = CONTAINER_HALF_HEIGHT + 'px';
                     }
                     setTimeout(run, RELAX_DURATION);
